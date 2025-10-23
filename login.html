@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login | User Authentication</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="card">
+    <h2>🔐 Login</h2>
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button onclick="login()">Login</button>
+    <a href="index.html">Create a new account</a>
+    <a href="forgot.html">Forgot your password?</a>
+    <p style="margin-top:20px;font-size:12px;opacity:0.7;">© 2025 User Authentication System</p>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    function isValidEmail(email) {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailPattern.test(email);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.innerText = message;
+      toast.style.display = "block";
+      setTimeout(() => toast.style.display = "none", 2500);
+    }
+
+    function login() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!email || !password) {
+        showToast("⚠ Fill all fields!");
+        return;
+      }
+
+      if (!isValidEmail(email)) {
+        showToast("⚠ Invalid email format!");
+        return;
+      }
+
+      // Admin shortcut
+      if (email === "admin@gmail.com" && password === "admin123") {
+        showToast("👨‍💻 Welcome, Admin!");
+        setTimeout(() => window.location.href = "admin.html", 1000);
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      const user = users.find(u => u.email === email && u.password === password);
+
+      if (!user) {
+        showToast("❌ Invalid email or password!");
+        return;
+      }
+
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      showToast("✅ Login successful!");
+      setTimeout(() => window.location.href = "dashboard.html", 1000);
+    }
+  </script>
+</body>
+</html>

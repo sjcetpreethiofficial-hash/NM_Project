@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forgot Password | User Auth</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="card">
+    <h2 style="margin-bottom: 20px;">🔑 Reset Password</h2>
+    
+    <input type="email" id="email" placeholder="Enter your registered email" required>
+    <input type="password" id="newPassword" placeholder="Enter new password" required>
+    <input type="password" id="confirmPassword" placeholder="Confirm new password" required>
+    
+    <button onclick="resetPassword()">Reset Password</button>
+    <a href="login.html">Back to Login</a>
+    <p style="margin-top:20px;font-size:12px;opacity:0.7;">© 2025 User Authentication System</p>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    function isValidEmail(email) {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailPattern.test(email);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.innerText = message;
+      toast.style.display = "block";
+      setTimeout(() => toast.style.display = "none", 2500);
+    }
+
+    function resetPassword() {
+      const email = document.getElementById("email").value.trim();
+      const newPassword = document.getElementById("newPassword").value.trim();
+      const confirmPassword = document.getElementById("confirmPassword").value.trim();
+
+      if (!email || !newPassword || !confirmPassword) {
+        showToast("⚠ Fill all fields!");
+        return;
+      }
+
+      if (!isValidEmail(email)) {
+        showToast("⚠ Invalid email!");
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        showToast("❌ Passwords do not match!");
+        return;
+      }
+
+      let users = JSON.parse(localStorage.getItem("users")) || [];
+      const userIndex = users.findIndex(user => user.email === email);
+
+      if (userIndex === -1) {
+        showToast("❌ Email not found!");
+        return;
+      }
+
+      users[userIndex].password = newPassword;
+      localStorage.setItem("users", JSON.stringify(users));
+      showToast("✅ Password reset successfully!");
+      setTimeout(() => window.location.href = "login.html", 1000);
+    }
+  </script>
+</body>
+</html>
